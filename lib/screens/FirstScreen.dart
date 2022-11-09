@@ -72,14 +72,19 @@ class _FirstScreenState extends State<FirstScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Adeptos Rss Feed 1',style: TextStyle(fontSize: 15.0),),
+        title: const Text(
+          'Flutter Adeptos Rss Feed 1',
+          style: TextStyle(fontSize: 15.0),
+        ),
         actions: [
           ElevatedButton(
             onPressed: () => loadData(),
             child: Row(
               children: const <Widget>[
                 Icon(Ionicons.refresh_circle),
-                SizedBox(width: 5.0,),
+                SizedBox(
+                  width: 5.0,
+                ),
                 Text('Refresh')
               ],
             ),
@@ -113,15 +118,19 @@ class _FirstScreenState extends State<FirstScreen> {
                       ),
                       child: ListTile(
                         leading: Image(
+                          height: 100,
+                          width: 100,
                           image: CachedNetworkImageProvider(
-                              item.media!.contents![0].url.toString()),
+                            item.media!.contents![0].url.toString(),
+                            errorListener: () => imageLoadedError(),
+                          ),
+                          errorBuilder: (_, __, ___) => imageLoadedError(),
                         ),
                         title: Text(item.title.toString()),
                         subtitle: Row(
                           children: <Widget>[
                             const Icon(Ionicons.time_outline),
-                            Text(DateFormat('MMM dd').format(
-                                DateTime.parse(item.pubDate.toString()))),
+                            Text(DateFormat('MMM dd').format(DateTime.parse(item.pubDate.toString()))),
                             const Spacer(),
                             const Icon(Ionicons.person_outline),
                             Text(item.dc!.creator.toString()),
@@ -137,4 +146,22 @@ class _FirstScreenState extends State<FirstScreen> {
       ),
     );
   }
+}
+
+Widget imageLoadedError() {
+  return SizedBox(
+    height: 100,
+    width: 100,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: const [
+        Icon(
+          Icons.error,
+          color: Colors.black,
+        ),
+        Spacer(),
+        Text('error loading')
+      ],
+    ),
+  );
 }

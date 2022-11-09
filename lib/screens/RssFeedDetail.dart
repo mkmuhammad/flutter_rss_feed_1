@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rss_feed_1/screens/FirstScreen.dart';
@@ -21,10 +22,7 @@ class _RssFeedDetailState extends State<RssFeedDetail> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Ionicons.arrow_back),
-          onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const FirstScreen(title: ''))),
+          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FirstScreen(title: ''))),
         ),
         title: Text(widget.rssFeed['title']),
         centerTitle: true,
@@ -34,13 +32,14 @@ class _RssFeedDetailState extends State<RssFeedDetail> {
           ListView(
             children: [
               Container(
-                height: 300,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(widget.rssFeed['image']),
-                      fit: BoxFit.cover,
-                    ),
-                    color: Colors.black12),
+                color: Colors.black12,
+                child: Image(
+                  image: CachedNetworkImageProvider(
+                    widget.rssFeed['image'],
+                    errorListener: () => detailImageLoadedError(),
+                  ),
+                  errorBuilder: (_, __, ___) => detailImageLoadedError(),
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -49,8 +48,7 @@ class _RssFeedDetailState extends State<RssFeedDetail> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   widget.rssFeed['title'],
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
               const SizedBox(
@@ -97,4 +95,22 @@ class _RssFeedDetailState extends State<RssFeedDetail> {
       ),
     );
   }
+}
+
+Widget detailImageLoadedError() {
+  return SizedBox(
+    height: 300,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Icon(
+          Icons.error,
+          color: Colors.black,
+        ),
+        SizedBox(height: 15.0,),
+        Text('Error Loading Image')
+      ],
+    ),
+  );
 }
